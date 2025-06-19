@@ -1,12 +1,26 @@
 from operator import truediv
 import os
+from dotenv import load_dotenv
 import uvicorn
 import httpx
+from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI, Header, HTTPException
+from starlette.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-API_KEY = 'd11caa373e4345afb76143753251906'
+load_dotenv()
+
+API_KEY = os.getenv('api_key')
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Для разработки
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.mount('/static', StaticFiles(directory='static'), name='static')
 
 @app.get('/verified_api')
 async def verified_api(api_key: str):
@@ -18,7 +32,7 @@ async def verified_api(api_key: str):
 async def get_current_weather(city: str):
     async with httpx.AsyncClient() as client:
         response = await client.get(
-            f"http://api.weatherapi.com/v1/current.json?key=d11caa373e4345afb76143753251906&q={city}&aqi=no"
+            f"http://api.weatherapi.com/v1/current.json?key={API_KEY}&q={city}&aqi=no"
         )
         data = response.json()
         return {
