@@ -1,5 +1,6 @@
 from operator import truediv
 
+import uvicorn
 from fastapi import FastAPI, Header, HTTPException
 
 app = FastAPI()
@@ -14,3 +15,6 @@ async def verified_api(api_key: str = Header()):
 @app.get('/verified_api')
 async def verified_api_get():
     await verified_api()
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="localhost", port=8000)
