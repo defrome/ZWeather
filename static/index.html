@@ -1,290 +1,52 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather App</title>
-    <style>
-        :root {
-            --primary: #4361ee;
-            --secondary: #3f37c9;
-            --accent: #4895ef;
-            --light: #f8f9fa;
-            --dark: #212529;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            transition: background 0.5s ease;
-        }
-
-        .weather-card {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 500px;
-            padding: 30px;
-            text-align: center;
-            backdrop-filter: blur(10px);
-            overflow: hidden;
-            position: relative;
-            z-index: 1;
-        }
-
-        .weather-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
-            opacity: 0.1;
-            z-index: -1;
-            animation: rotate 15s linear infinite;
-        }
-
-        @keyframes rotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        h1 {
-            color: var(--dark);
-            margin-bottom: 30px;
-            font-weight: 600;
-        }
-
-        .search-container {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-        }
-
-        input {
-            flex: 1;
-            padding: 15px;
-            border: none;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.8);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            font-size: 16px;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        input:focus {
-            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.2);
-        }
-
-        button {
-            padding: 15px 25px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
-        }
-
-        button:hover {
-            background: var(--secondary);
-            transform: translateY(-2px);
-        }
-
-        .weather-info {
-            display: none;
-            animation: fadeIn 0.5s ease forwards;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .city-name {
-            font-size: 28px;
-            margin-bottom: 10px;
-            color: var(--dark);
-        }
-
-        .temperature {
-            font-size: 72px;
-            font-weight: 300;
-            margin: 20px 0;
-            position: relative;
-            display: inline-block;
-        }
-
-        .temperature::after {
-            content: '°C';
-            position: absolute;
-            top: 0;
-            right: -30px;
-            font-size: 24px;
-        }
-
-        .weather-icon {
-            width: 100px;
-            height: 100px;
-            margin: 0 auto;
-            display: block;
-        }
-
-        .error-message {
-            color: #e63946;
-            margin-top: 20px;
-            display: none;
-        }
-
-        .loader {
-            display: none;
-            width: 50px;
-            height: 50px;
-            border: 5px solid rgba(67, 97, 238, 0.2);
-            border-radius: 50%;
-            border-top-color: var(--primary);
-            animation: spin 1s ease-in-out infinite;
-            margin: 20px auto;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        @media (max-width: 600px) {
-            .weather-card {
-                padding: 20px;
-            }
-
-            .temperature {
-                font-size: 60px;
-            }
-        }
-    </style>
+    <title>Weather Forecast</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <div class="weather-card">
-        <h1>Погодный прогноз</h1>
+    <div class="app-container">
+        <div class="weather-card">
+            <div class="search-container">
+                <input type="text" id="city-input" placeholder="Search city...">
+                <button id="search-btn"><i class="fas fa-search"></i></button>
+            </div>
 
-        <div class="search-container">
-            <input type="text" id="city-input" placeholder="Введите город...">
-            <button id="search-btn">Поиск</button>
-        </div>
+            <div class="weather-display">
+                <div class="location-time">
+                    <h1 id="city-name">Loading...</h1>
+                    <p id="current-date">-</p>
+                </div>
 
-        <div class="loader" id="loader"></div>
+                <div class="weather-main">
+                    <div class="temperature-container">
+                        <span id="temperature">-</span>
+                        <span class="unit">°C</span>
+                    </div>
+                    <div id="weather-condition">-</div>
+                </div>
 
-        <div class="error-message" id="error-message"></div>
+                <div class="weather-details">
+                    <div class="detail-item">
+                        <i class="fas fa-wind"></i>
+                        <span id="wind-speed">- km/h</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span id="pressure">- in</span>
+                    </div>
+                </div>
+            </div>
 
-        <div class="weather-info" id="weather-info">
-            <h2 class="city-name" id="city-name"></h2>
-            <div class="temperature" id="temperature"></div>
+            <div class="hourly-forecast" id="hourly-forecast">
+                <!-- Filled by JavaScript -->
+            </div>
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const cityInput = document.getElementById('city-input');
-            const searchBtn = document.getElementById('search-btn');
-            const weatherInfo = document.getElementById('weather-info');
-            const cityName = document.getElementById('city-name');
-            const temperature = document.getElementById('temperature');
-            const errorMessage = document.getElementById('error-message');
-            const loader = document.getElementById('loader');
-
-            // Цвета фона для разных температур
-            const tempColors = {
-                hot: { start: '#ff9a9e', end: '#fad0c4' },
-                warm: { start: '#a1c4fd', end: '#c2e9fb' },
-                cool: { start: '#84fab0', end: '#8fd3f4' },
-                cold: { start: '#a6c1ee', end: '#fbc2eb' }
-            };
-
-            searchBtn.addEventListener('click', getWeather);
-            cityInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') getWeather();
-            });
-
-            async function getWeather() {
-                const city = cityInput.value.trim();
-
-                if (!city) {
-                    showError('Пожалуйста, введите город');
-                    return;
-                }
-
-                // Показываем загрузку
-                loader.style.display = 'block';
-                weatherInfo.style.display = 'none';
-                errorMessage.style.display = 'none';
-
-                try {
-                    const response = await fetch(`http://localhost:3000/current_weather?city=${encodeURIComponent(city)}`);
-
-                    if (!response.ok) {
-                        throw new Error('Город не найден');
-                    }
-
-                    const data = await response.json();
-
-                    // Обновляем интерфейс
-                    cityName.textContent = data.city;
-                    temperature.textContent = Math.round(data.temp);
-
-                    // Меняем фон в зависимости от температуры
-                    updateBackground(data.temp);
-
-                    // Показываем информацию о погоде
-                    weatherInfo.style.display = 'block';
-                    loader.style.display = 'none';
-                } catch (err) {
-                    showError(err.message);
-                    loader.style.display = 'none';
-                }
-            }
-
-            function showError(message) {
-                errorMessage.textContent = message;
-                errorMessage.style.display = 'block';
-            }
-
-            function updateBackground(temp) {
-                const body = document.body;
-                let gradient;
-
-                if (temp > 30) {
-                    gradient = `linear-gradient(135deg, ${tempColors.hot.start} 0%, ${tempColors.hot.end} 100%)`;
-                } else if (temp > 20) {
-                    gradient = `linear-gradient(135deg, ${tempColors.warm.start} 0%, ${tempColors.warm.end} 100%)`;
-                } else if (temp > 10) {
-                    gradient = `linear-gradient(135deg, ${tempColors.cool.start} 0%, ${tempColors.cool.end} 100%)`;
-                } else {
-                    gradient = `linear-gradient(135deg, ${tempColors.cold.start} 0%, ${tempColors.cold.end} 100%)`;
-                }
-
-                body.style.background = gradient;
-            }
-
-            // Загружаем погоду для города по умолчанию
-            cityInput.value = 'Москва';
-            getWeather();
-        });
-    </script>
+    <script src="/static/script.js"></script>
 </body>
 </html>
