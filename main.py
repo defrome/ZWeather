@@ -43,7 +43,7 @@ async def get_current_weather(city: str):
         )
         data = response.json()
         return {
-            "city": data['location']['name'],
+            "city": city,
             "temp": data['current']['temp_c'],
             "condition": data['current']['condition']['text'],
             "wind": data['current']['wind_kph'],
