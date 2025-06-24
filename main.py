@@ -17,7 +17,7 @@ API_KEY = os.getenv('api_key')
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Для разработки
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
